@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 public class Booking {
 
-    enum status {
+    enum Status {
         WAITING, APPROVED, REJECTED, CANCELED
     }
 

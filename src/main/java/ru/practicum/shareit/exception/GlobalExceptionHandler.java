@@ -1,34 +1,29 @@
 package ru.practicum.shareit.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
+import ru.practicum.shareit.exception.dto.ErrorDto;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<Map<String, String>> handleValidationException(ValidationException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleValidationException(ValidationException ex) {
+        return new ErrorDto(ex.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleNotFoundException(NotFoundException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(map);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDto handleNotFoundException(NotFoundException ex) {
+        return new ErrorDto(ex.getMessage());
     }
 
     @ExceptionHandler(DuplicateException.class)
-    public ResponseEntity<Map<String, String>> handleDuplicateException(DuplicateException ex) {
-        Map<String, String> map = new HashMap<>();
-        map.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(map);
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDto handleDuplicateException(DuplicateException ex) {
+        return new ErrorDto(ex.getMessage());
     }
 }

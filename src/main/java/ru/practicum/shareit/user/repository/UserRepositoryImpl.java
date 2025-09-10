@@ -2,80 +2,56 @@ package ru.practicum.shareit.user.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
 @Slf4j
 public class UserRepositoryImpl implements UserRepository {
 
-    private final List<User> users = new ArrayList<>();
+    private final HashMap<Long, User> users = new HashMap<>();
 
     @Override
     public User getUser(long id) {
-        User user = findUser(id);
-        if (user == null) {
-            log.info("Пользователь под id: {} не найден!", id);
-            throw new NotFoundException("User not found");
-        }
-        return user;
+        return findUser(id);
     }
 
     @Override
     public User createUser(User user) {
-        User newUser = new User();
-        newUser.setId(getId());
-        newUser.setName(user.getName());
-        newUser.setEmail(user.getEmail());
-        users.add(newUser);
-        return newUser;
+        user.setId(getId());
+        users.put(user.getId(), user);
+        return user;
     }
 
     @Override
-    public User updateUser(Long userId, User user) {
-        User updateUser = findUser(userId);
-        if (updateUser == null) {
-            log.info("Пользователь под id: {} не найден!", user.getId());
-            throw new NotFoundException("User not found");
-        }
-        if (user.getName() != null) {
-            updateUser.setName(user.getName());
-        }
-        if (user.getEmail() != null) {
-            updateUser.setEmail(user.getEmail());
-        }
-
-        return updateUser;
+    public User updateUser(User user) {
+        users.put(user.getId(), user);
+        return user;
     }
 
     @Override
     public void deleteUser(long id) {
-        User user = findUser(id);
-        if (user == null) {
-            log.info("Пользователь под id: {} не найден!", id);
-            throw new NotFoundException("User not found");
-        }
-        users.remove(user);
+        users.remove(id);
     }
 
     @Override
     public List<User> findUsers() {
-        return users;
+        return users.values().stream().toList();
     }
 
     private Long getId() {
-        long userId = users.stream()
+        long userId = users.values().stream()
                 .mapToLong(User::getId)
                 .max()
                 .orElse(0L);
         return userId + 1;
     }
 
-    private User findUser(long id) {
-        return users.stream()
+    @Override
+    public User findUser(long id) {
+        return users.values().stream()
                 .filter(user -> user.getId().equals(id))
                 .findFirst()
                 .orElse(null);

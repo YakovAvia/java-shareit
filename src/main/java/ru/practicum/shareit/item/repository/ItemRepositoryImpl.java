@@ -2,54 +2,38 @@ package ru.practicum.shareit.item.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
 
-    private final List<Item> items = new ArrayList<>();
+    private final HashMap<Long, Item> items = new HashMap<>();
 
     @Override
-    public Item createItem(User user, Item item) {
-        Item newItem = new Item();
-        newItem.setId(generateId());
-        newItem.setName(item.getName());
-        newItem.setDescription(item.getDescription());
-        newItem.setAvailable(item.getAvailable() != null ? item.getAvailable() : false);
-        newItem.setUser(user);
-        newItem.setRequest(item.getRequest());
-        items.add(newItem);
-        return newItem;
+    public Item createItem(Item item) {
+        item.setId(generateId());
+        items.put(item.getId(), item);
+        return item;
     }
 
     @Override
-    public Item updateItem(Long userId, Long itemId, Item item) {
-        Item updatedItem = findItemById(itemId);
-        if (item.getName() != null) {
-            updatedItem.setName(item.getName());
-        }
-        if (item.getDescription() != null) {
-            updatedItem.setDescription(item.getDescription());
-        }
-        if (item.getAvailable() != null) {
-            updatedItem.setAvailable(item.getAvailable());
-        }
-        return updatedItem;
+    public Item updateItem(Item item) {
+        items.put(item.getId(), item);
+        return item;
     }
 
     @Override
     public List<Item> getItemUser(Long userId) {
-        return items.stream()
+        return items.values().stream()
                 .filter(i -> i.getUser().getId().equals(userId))
                 .toList();
     }
 
     @Override
     public List<Item> searchItem(String text) {
-        return items.stream()
+        return items.values().stream()
                 .filter(i -> i.getName() != null && i.getName().toLowerCase().contains(text.toLowerCase()) ||
                         i.getDescription() != null && i.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .filter(Item::getAvailable)
@@ -57,7 +41,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     private Long generateId() {
-        long itemId = items.stream()
+        long itemId = items.values().stream()
                 .mapToLong(Item::getId)
                 .max()
                 .orElse(0L);
@@ -66,10 +50,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item findItemById(Long itemId) {
-        return items.stream()
-                .filter(i -> i.getId().equals(itemId))
-                .findFirst()
-                .orElse(null);
+        return items.getOrDefault(itemId, null);
     }
 
 }

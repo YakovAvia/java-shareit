@@ -10,10 +10,12 @@ public interface UserRepository {
 
     User createUser(User user);
 
-    User updateUser(Long userId, User user);
+    User updateUser(User user);
 
     void deleteUser(long id);
 
     List<User> findUsers();
+
+    User findUser(long id);
 
 }

@@ -44,24 +44,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
         User user = userRepository.findUser(userId);
+
         if (user == null) {
             log.info("Пользователь не найден!");
             throw new NotFoundException("Пользователь не найден!");
         }
-        if (user.getEmail() != null) {
+
+        if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) {
             if (!user.getEmail().contains("@")) {
                 throw new ValidationException("Имя почты указано не корректно!");
             }
-            if (userDto.getEmail() != null) {
-                boolean containsEmail = userRepository.findUsers().stream()
-                        .anyMatch(existingUser -> existingUser.getEmail().equals(userDto.getEmail()));
-                if (containsEmail) {
-                    throw new DuplicateException("Указанная почта уже зарегистрирована!");
-                }
+            boolean containsEmail = userRepository.findUsers().stream()
+                    .anyMatch(existingUser -> existingUser.getEmail().equals(userDto.getEmail()));
+            if (containsEmail) {
+                throw new DuplicateException("Указанная почта уже зарегистрирована!");
             }
+            user.setEmail(userDto.getEmail());
         }
 
-        UserMapper.mapToUserUpdate(user, userDto);
+        if (userDto.getName() != null) {
+            user.setName(userDto.getName());
+        }
+
         return UserMapper.mapToUserDto(userRepository.updateUser(user));
     }
 

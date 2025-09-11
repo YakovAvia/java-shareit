@@ -25,15 +25,4 @@ public final class ItemMappers {
         return newItem;
     }
 
-    public static void toItemUpdate(ItemDto item, Item updatedItem) {
-        if (item.getName() != null) {
-            updatedItem.setName(item.getName());
-        }
-        if (item.getDescription() != null) {
-            updatedItem.setDescription(item.getDescription());
-        }
-        if (item.getAvailable() != null) {
-            updatedItem.setAvailable(item.getAvailable());
-        }
-    }
 }

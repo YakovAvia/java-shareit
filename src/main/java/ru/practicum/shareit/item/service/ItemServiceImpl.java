@@ -39,16 +39,29 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) {
         User user = userRepository.getUser(userId);
         Item updateItem = itemRepository.findItemById(itemId);
+
         if (user == null) {
             log.error("Пользователь с id: {}, не найден!", userId);
             throw new NotFoundException("Пользователь не найден!");
         }
+
         if (!updateItem.getUser().getId().equals(user.getId())) {
             log.error("Пользователь с id: {}, не может менять параметры предмета!", user.getId());
             throw new ValidationException("Пользователь не может менять параметры предмета!");
         }
 
-        ItemMappers.toItemUpdate(itemDto, updateItem);
+        if (itemDto.getName() != null) {
+            updateItem.setName(itemDto.getName());
+        }
+
+        if (itemDto.getDescription() != null) {
+            updateItem.setDescription(itemDto.getDescription());
+        }
+
+        if (itemDto.getAvailable() != null) {
+            updateItem.setAvailable(itemDto.getAvailable());
+        }
+
         return ItemMappers.toItemDto(itemRepository.updateItem(updateItem));
     }
 

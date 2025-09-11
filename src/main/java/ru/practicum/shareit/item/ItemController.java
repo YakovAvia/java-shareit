@@ -31,7 +31,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ResponseEntity<ItemDto> updateItem(@NotNull(message = "UserId не должен быть null") @RequestHeader(HEADER_REQUEST_ID) Long userId,
+    public ResponseEntity<ItemDto> updateItem(@RequestHeader(HEADER_REQUEST_ID) Long userId,
                                               @NotNull(message = "itemId не должен быть null") @PathVariable Long itemId,
                                               @RequestBody ItemDto itemDto) {
         return ResponseEntity.ok(itemService.updateItem(userId, itemId, itemDto));

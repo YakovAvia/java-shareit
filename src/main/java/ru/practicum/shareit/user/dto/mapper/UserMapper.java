@@ -20,12 +20,4 @@ public final class UserMapper {
         return newUser;
     }
 
-    public static void mapToUserUpdate(User user, UserDto userDto) {
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
-        }
-        if (userDto.getEmail() != null) {
-            user.setEmail(userDto.getEmail());
-        }
-    }
 }

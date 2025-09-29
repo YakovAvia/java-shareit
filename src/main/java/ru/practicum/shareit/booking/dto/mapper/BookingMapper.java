@@ -6,7 +6,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,15 +24,14 @@ public final class BookingMapper {
         Booking createdBooking = new Booking();
         createdBooking.setStart(booking.getStart());
         createdBooking.setEnd(booking.getEnd());
-        createdBooking.setStatus(booking.getStatus());
         createdBooking.setBooker(user);
         createdBooking.setItem(item);
         return createdBooking;
     }
 
     public static List<BookingDto> toListBookingDto(List<Booking> booking) {
-        List<BookingDto> bookingDtos = new ArrayList<>();
-        booking.forEach(b -> bookingDtos.add(toBookingDto(b)));
-        return bookingDtos;
+        return booking.stream()
+                .map(BookingMapper::toBookingDto)
+                .toList();
     }
 }

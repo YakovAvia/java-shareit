@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -20,30 +21,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Long id) {
-        if (userRepository.findUser(id) == null) {
+        if (userRepository.findUserById(id) == null) {
             log.info("Пользователь под id: {} не найден!", id);
             throw new NotFoundException("Пользователь не найден!");
         }
-        User user = userRepository.getUser(id);
+        User user = userRepository.findUserById(id);
         return UserMapper.mapToUserDto(user);
     }
 
     @Override
+    @Transactional
     public UserDto createUser(UserDto userDto) {
         if (userDto.getEmail() != null) {
-            boolean containsEmail = userRepository.findUsers().stream()
+            boolean containsEmail = userRepository.findAll().stream()
                     .anyMatch(existingUser -> existingUser.getEmail().equals(userDto.getEmail()));
             if (containsEmail) {
                 throw new DuplicateException("Указанная почта уже зарегистрирована!");
             }
         }
-        User newUser = userRepository.createUser(UserMapper.mapToUser(userDto));
-        return UserMapper.mapToUserDto(newUser);
+        log.info("Пользователь с ID: {} успешно создан!", userDto.getId());
+        return UserMapper.mapToUserDto(userRepository.save(UserMapper.mapToUser(userDto)));
     }
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
-        User user = userRepository.findUser(userId);
+        User user = userRepository.findUserById(userId);
 
         if (user == null) {
             log.info("Пользователь не найден!");
@@ -54,7 +56,7 @@ public class UserServiceImpl implements UserService {
             if (!user.getEmail().contains("@")) {
                 throw new ValidationException("Имя почты указано не корректно!");
             }
-            boolean containsEmail = userRepository.findUsers().stream()
+            boolean containsEmail = userRepository.findAll().stream()
                     .anyMatch(existingUser -> existingUser.getEmail().equals(userDto.getEmail()));
             if (containsEmail) {
                 throw new DuplicateException("Указанная почта уже зарегистрирована!");
@@ -66,17 +68,18 @@ public class UserServiceImpl implements UserService {
             user.setName(userDto.getName());
         }
 
-        return UserMapper.mapToUserDto(userRepository.updateUser(user));
+        log.info("Пользователь с ID: {} успешно обновлен!",userId);
+        return UserMapper.mapToUserDto(userRepository.save(user));
     }
 
     @Override
     public void deleteUser(long id) {
-        User user = userRepository.findUser(id);
+        User user = userRepository.findUserById(id);
         if (user == null) {
             log.info("Пользователь под id: {} не найден!", id);
             throw new NotFoundException("Пользователь не найден!");
         }
-        userRepository.deleteUser(user.getId());
+        userRepository.delete(user);
     }
 
 }

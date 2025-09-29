@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,21 +24,22 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public ItemDto createItem(Long userId, ItemDto itemDto) {
-        User user = userRepository.getUser(userId);
+        User user = userRepository.findUserById(userId);
 
         if (user == null) {
             log.error("User c id {} не найден!", userId);
             throw new NotFoundException("Пользователь не найден!");
         }
 
-        Item item = itemRepository.createItem(ItemMappers.toItem(itemDto, user));
-        return ItemMappers.toItemDto(item);
+        return ItemMappers.toItemDto(itemRepository.save(ItemMappers.toItem(itemDto, user)));
     }
 
     @Override
+    @Transactional
     public ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) {
-        User user = userRepository.getUser(userId);
+        User user = userRepository.findUserById(userId);
         Item updateItem = itemRepository.findItemById(itemId);
 
         if (user == null) {
@@ -62,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
             updateItem.setAvailable(itemDto.getAvailable());
         }
 
-        return ItemMappers.toItemDto(itemRepository.updateItem(updateItem));
+        return ItemMappers.toItemDto(itemRepository.save(updateItem));
     }
 
     @Override
@@ -78,7 +80,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getItemUser(Long userId) {
         log.info("Получаем предметы для User - {}", userId);
-        return itemRepository.getItemUser(userId).stream().map(ItemMappers::toItemDto).toList();
+        return itemRepository.findByUserId(userId).stream().map(ItemMappers::toItemDto).toList();
     }
 
     @Override

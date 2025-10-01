@@ -39,7 +39,6 @@ public class UserServiceImpl implements UserService {
                 throw new DuplicateException("Указанная почта уже зарегистрирована!");
             }
         }
-        log.info("Пользователь с ID: {} успешно создан!", userDto.getId());
         return UserMapper.mapToUserDto(userRepository.save(UserMapper.mapToUser(userDto)));
     }
 

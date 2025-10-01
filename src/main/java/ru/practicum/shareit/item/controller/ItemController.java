@@ -3,9 +3,12 @@ package ru.practicum.shareit.item.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CreateCommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -14,6 +17,7 @@ import java.util.List;
 /**
  * TODO Sprint add-controllers.
  */
+@Slf4j
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -51,6 +55,15 @@ public class ItemController {
     public ResponseEntity<List<ItemDto>> searchItem(@RequestHeader(HEADER_REQUEST_ID) Long userId,
                                                     @RequestParam String text) {
         return ResponseEntity.ok(itemService.searchItem(userId, text));
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public ResponseEntity<CommentDto> createComment(@RequestHeader(HEADER_REQUEST_ID) Long userId,
+                                                    @RequestBody CreateCommentDto createCommentDto,
+                                                    @PathVariable Long itemId
+    ) {
+        log.info("Добавление нового комментария для предмета.");
+        return ResponseEntity.ok(itemService.addComment(userId, createCommentDto, itemId));
     }
 
 }

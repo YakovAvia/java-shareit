@@ -11,6 +11,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CreateCommentDto;
+import ru.practicum.shareit.item.dto.GetItemDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.mappers.CommentMappers;
 import ru.practicum.shareit.item.dto.mappers.ItemMappers;
@@ -79,13 +80,23 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItem(Long itemId) {
+    public GetItemDto getItem(Long itemId, Long userId) {
         Item item = itemRepository.findItemById(itemId);
         if (item == null) {
             log.warn("Пользователь запросил item id: {}, но такого предмета не существует!", itemId);
             throw new NotFoundException("Item не существует!");
         }
-        return ItemMappers.toItemAndCommentDto(item, commentRepository.findByItemId(itemId), bookingRepository.findLastBooking(itemId, LocalDateTime.now()), bookingRepository.findNextBooking(itemId, LocalDateTime.now()) );
+        Booking bookingLast;
+        Booking bookingNext;
+        if (item.getUser().getId().equals(userId)) {
+            bookingLast = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
+            bookingNext = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
+        } else {
+            bookingLast = null;
+            bookingNext = null;
+        }
+
+        return ItemMappers.toItemAndCommentDto(item, commentRepository.findByItemId(itemId), bookingLast, bookingNext);
     }
 
     @Override

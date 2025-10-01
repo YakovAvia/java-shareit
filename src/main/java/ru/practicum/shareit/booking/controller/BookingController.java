@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.RequestBookingCreateDto;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
@@ -36,8 +35,8 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<BookingCreateDto> updateBookingStatus(@RequestHeader(HEADER_REQUEST_ID) Long userId,
-                                                          @PathVariable Long bookingId,
-                                                          @RequestParam Boolean approved) {
+                                                                @PathVariable Long bookingId,
+                                                                @RequestParam Boolean approved) {
         log.info("Обновляем у бронирования ID: {} статус.", bookingId);
         return ResponseEntity.ok(bookingService.updateBookingStatus(userId, bookingId, approved));
     }
@@ -50,14 +49,14 @@ public class BookingController {
 
     @GetMapping()
     public ResponseEntity<List<BookingCreateDto>> getAllBookingsToUser(@RequestHeader(HEADER_REQUEST_ID) Long userId,
-                                                                 @RequestParam(required = false, defaultValue = "ALL") String state) {
+                                                                       @RequestParam(required = false, defaultValue = "ALL") String state) {
         log.info("Получение списка всех бронирований текущего пользователя.");
         return ResponseEntity.ok(bookingService.getAllBookingsToUser(userId, state));
     }
 
     @GetMapping("/owner")
     public ResponseEntity<List<BookingCreateDto>> getAllItemBookingToUser(@RequestHeader(HEADER_REQUEST_ID) Long userId,
-                                                                    @RequestParam(required = false,defaultValue = "ALL") String state) {
+                                                                          @RequestParam(required = false, defaultValue = "ALL") String state) {
         log.info("Получение списка бронирований для всех вещей текущего пользователя.");
         return ResponseEntity.ok(bookingService.getAllItemBookingToUser(userId, state));
     }

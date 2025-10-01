@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
             user.setName(userDto.getName());
         }
 
-        log.info("Пользователь с ID: {} успешно обновлен!",userId);
+        log.info("Пользователь с ID: {} успешно обновлен!", userId);
         return UserMapper.mapToUserDto(userRepository.save(user));
     }
 

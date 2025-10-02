@@ -1,9 +1,9 @@
 package ru.practicum.shareit.item.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -79,6 +79,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GetItemDto getItem(Long itemId, Long userId) {
         Item item = itemRepository.findItemById(itemId);
         if (item == null) {
@@ -99,12 +100,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> getItemUser(Long userId) {
         log.info("Получаем предметы для User - {}", userId);
         return itemRepository.findByUserId(userId).stream().map(ItemMappers::toItemDto).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemDto> searchItem(Long userId, String text) {
         List<Item> itemList = List.of();
         if (text == null || text.isEmpty()) {

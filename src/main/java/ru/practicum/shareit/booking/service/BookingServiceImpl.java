@@ -1,10 +1,11 @@
 package ru.practicum.shareit.booking.service;
 
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.RequestBookingCreateDto;
 import ru.practicum.shareit.booking.dto.mapper.BookingMapper;
@@ -54,6 +55,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingCreateDto updateBookingStatus(Long userId, Long bookingId, boolean approved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Заявка на бронирование не найдена"));
@@ -74,6 +76,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingCreateDto getBooking(Long userID, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Заявка на бронирование не найдена!"));
@@ -86,6 +89,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingCreateDto> getAllBookingsToUser(Long userId, String state) {
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
         return switch (state) {
@@ -105,6 +109,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingCreateDto> getAllItemBookingToUser(Long userId, String state) {
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
         if (!itemRepository.findByUserId(userId).isEmpty()) {

@@ -9,12 +9,31 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 
 public final class BookingMapper {
 
     public static Booking toBooking(RequestBookingCreateDto booking, User user, Item item) {
+
+        if (booking == null) {
+            throw new IllegalArgumentException("Бронирование не найдено");
+        }
+        if (user == null) {
+            throw new IllegalArgumentException("Пользователь не найден");
+        }
+        if (item == null) {
+            throw new IllegalArgumentException("Предмент не найден");
+        }
+        if (booking.getStart() == null) {
+            throw new IllegalArgumentException("Дата начала бронирования не найдена");
+        }
+        if (booking.getEnd() == null) {
+            throw new IllegalArgumentException("Дата окончания бронирования не найдена");
+        }
+
         Booking createdBooking = new Booking();
         createdBooking.setStart(booking.getStart());
         createdBooking.setEnd(booking.getEnd());
@@ -25,26 +44,44 @@ public final class BookingMapper {
     }
 
     public static BookingCreateDto toBookingCreateDto(Booking booking) {
+        if (booking == null) {
+            throw new IllegalArgumentException("Бронирование не найдено");
+        }
+
         BookingCreateDto bookingCreateDto = new BookingCreateDto();
+        bookingCreateDto.setId(booking.getId());
         bookingCreateDto.setStart(booking.getStart());
         bookingCreateDto.setEnd(booking.getEnd());
         bookingCreateDto.setStatus(booking.getStatus());
 
-        UserDto userDto = new UserDto();
-        userDto.setId(booking.getBooker().getId());
-        userDto.setName(booking.getBooker().getName());
-        bookingCreateDto.setBooker(userDto);
+        if (booking.getBooker() != null) {
+            UserDto userDto = new UserDto();
+            userDto.setId(booking.getBooker().getId());
+            userDto.setName(booking.getBooker().getName());
+            bookingCreateDto.setBooker(userDto);
+        } else {
+            bookingCreateDto.setBooker(null);
+        }
 
-        ItemDto itemDto = new ItemDto();
-        itemDto.setId(booking.getItem().getId());
-        itemDto.setName(booking.getItem().getName());
-        bookingCreateDto.setItem(itemDto);
+        if (booking.getItem() != null) {
+            ItemDto itemDto = new ItemDto();
+            itemDto.setId(booking.getItem().getId());
+            itemDto.setName(booking.getItem().getName());
+            bookingCreateDto.setItem(itemDto);
+        } else {
+            bookingCreateDto.setItem(null);
+        }
 
         return bookingCreateDto;
     }
 
     public static List<BookingCreateDto> toListBookingDto(List<Booking> booking) {
+        if (booking == null) {
+            return Collections.emptyList();
+        }
+
         return booking.stream()
+                .filter(Objects::nonNull)
                 .map(BookingMapper::toBookingCreateDto)
                 .toList();
     }

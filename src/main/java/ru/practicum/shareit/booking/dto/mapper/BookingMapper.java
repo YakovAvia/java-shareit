@@ -18,28 +18,16 @@ public final class BookingMapper {
 
     public static Booking toBooking(RequestBookingCreateDto booking, User user, Item item) {
 
-        if (booking == null) {
-            throw new IllegalArgumentException("Бронирование не найдено");
-        }
-        if (user == null) {
-            throw new IllegalArgumentException("Пользователь не найден");
-        }
-        if (item == null) {
-            throw new IllegalArgumentException("Предмент не найден");
-        }
-        if (booking.getStart() == null) {
-            throw new IllegalArgumentException("Дата начала бронирования не найдена");
-        }
-        if (booking.getEnd() == null) {
-            throw new IllegalArgumentException("Дата окончания бронирования не найдена");
-        }
-
         Booking createdBooking = new Booking();
-        createdBooking.setStart(booking.getStart());
-        createdBooking.setEnd(booking.getEnd());
+        createdBooking.setStart(booking.getStart() != null ? booking.getStart() : null);
+        createdBooking.setEnd(booking.getEnd() != null ? booking.getEnd() : null);
         createdBooking.setStatus(BookingStatus.WAITING);
-        createdBooking.setBooker(user);
-        createdBooking.setItem(item);
+        if (user != null) {
+            createdBooking.setBooker(user);
+        }
+        if (item != null) {
+            createdBooking.setItem(item);
+        }
         return createdBooking;
     }
 

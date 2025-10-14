@@ -7,7 +7,9 @@ import ru.practicum.shareit.user.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findUserById(long id);
 
     boolean existsByEmail(String email);
+
+    User findUserById(long userId);
+
 }

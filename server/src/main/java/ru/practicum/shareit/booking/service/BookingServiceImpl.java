@@ -46,6 +46,10 @@ public class BookingServiceImpl implements BookingService {
                     return new NotFoundException("Предмет не найден");
                 });
 
+        if (item.getUser().getId().equals(userId)) {
+            throw new NotFoundException("Нельзя забронировать свою же вещь");
+        }
+
         if (!item.getAvailable()) {
             log.error("Предмет {} недоступен для бронирования", item.getId());
             throw new ValidationException("Предмет недоступен для бронирования");
@@ -59,6 +63,9 @@ public class BookingServiceImpl implements BookingService {
     public BookingCreateDto updateBookingStatus(Long userId, Long bookingId, boolean approved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Заявка на бронирование не найдена"));
+        if (!booking.getStatus().equals(BookingStatus.WAITING)) {
+            throw new ValidationException("Статус можно изменить только для заявок в статусе WAITING");
+        }
         boolean ownerItem = booking.getItem().getUser().getId().equals(userId);
         if (ownerItem) {
             if (approved) {
@@ -91,6 +98,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public List<BookingCreateDto> getAllBookingsToUser(Long userId, String state) {
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
         return switch (state) {
             case "ALL" -> BookingMapper.toListBookingDto(bookingRepository.findByBooker_Id(userId, sort));
@@ -112,7 +120,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional(readOnly = true)
     public List<BookingCreateDto> getAllItemBookingToUser(Long userId, String state) {
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
-        if (!itemRepository.findByUserId(userId).isEmpty()) {
+        if (!itemRepository.findAllByUser_Id(userId).isEmpty()) {
             return switch (state) {
                 case "ALL" -> BookingMapper.toListBookingDto(bookingRepository.findByItem_User_Id(userId, sort));
                 case "WAITING" ->

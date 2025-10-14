@@ -10,6 +10,7 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ItemMappers {
 
@@ -28,11 +29,11 @@ public final class ItemMappers {
         Item newItem = new Item();
         newItem.setName(itemDto.getName());
         newItem.setDescription(itemDto.getDescription());
-        newItem.setAvailable(itemDto.getAvailable() != null ? itemDto.getAvailable() : false);
+        newItem.setAvailable(itemDto.getAvailable());
 
         if (itemDto.getRequestId() != null) {
             ItemRequest itemRequest = new ItemRequest();
-            itemRequest.setId(itemDto.getId());
+            itemRequest.setId(itemDto.getRequestId());
             newItem.setRequest(itemRequest);
         }
 
@@ -64,12 +65,8 @@ public final class ItemMappers {
         }
 
         itemDto.setComments(comment.stream()
-                .map(comment1 -> {
-                    Comment comment2 = new Comment();
-                    comment2.setId(comment1.getId());
-                    comment2.setText(comment1.getText());
-                    return comment2;
-                }).toList());
+                .map(CommentMappers::toCommentDto)
+                .collect(Collectors.toList()));
         return itemDto;
     }
 

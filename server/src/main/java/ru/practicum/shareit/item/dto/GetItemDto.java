@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.dto.CommentDto;
 
 import java.util.List;
 
@@ -21,5 +21,5 @@ public class GetItemDto {
 
     private BookingDto nextBooking;
 
-    private List<Comment> comments;
+    private List<CommentDto> comments;
 }

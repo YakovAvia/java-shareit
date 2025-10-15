@@ -425,6 +425,132 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void getAllBookingsToUser_WithWaitingState_ShouldReturnWaitingBookings() {
+
+        Long userId = 1L;
+        String state = "WAITING";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        User user = new User();
+        user.setId(userId);
+
+        Booking booking1 = new Booking();
+        booking1.setId(1L);
+        booking1.setStatus(BookingStatus.WAITING);
+
+        List<Booking> bookings = Arrays.asList(booking1);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sort)).thenReturn(bookings);
+
+        List<BookingCreateDto> result = bookingService.getAllBookingsToUser(userId, state);
+
+        assertNotNull(result);
+        verify(userRepository, times(1)).findById(userId);
+        verify(bookingRepository, times(1)).findByBooker_IdAndStatus(userId, BookingStatus.WAITING, sort);
+    }
+
+    @Test
+    void getAllBookingsToUser_WithRejectedState_ShouldReturnRejectedBookings() {
+
+        Long userId = 1L;
+        String state = "REJECTED";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        User user = new User();
+        user.setId(userId);
+
+        Booking booking1 = new Booking();
+        booking1.setId(1L);
+        booking1.setStatus(BookingStatus.REJECTED);
+
+        List<Booking> bookings = Arrays.asList(booking1);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(bookingRepository.findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sort)).thenReturn(bookings);
+
+        List<BookingCreateDto> result = bookingService.getAllBookingsToUser(userId, state);
+
+        assertNotNull(result);
+        verify(userRepository, times(1)).findById(userId);
+        verify(bookingRepository, times(1)).findByBooker_IdAndStatus(userId, BookingStatus.REJECTED, sort);
+    }
+
+    @Test
+    void getAllBookingsToUser_WithCurrentState_ShouldReturnCurrentBookings() {
+
+        Long userId = 1L;
+        String state = "CURRENT";
+
+        User user = new User();
+        user.setId(userId);
+
+        Booking booking1 = new Booking();
+        booking1.setId(1L);
+
+        List<Booking> bookings = Arrays.asList(booking1);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(bookingRepository.findCurrentByBooker(eq(userId), any(LocalDateTime.class))).thenReturn(bookings);
+
+        List<BookingCreateDto> result = bookingService.getAllBookingsToUser(userId, state);
+
+        assertNotNull(result);
+        verify(userRepository, times(1)).findById(userId);
+        verify(bookingRepository, times(1)).findCurrentByBooker(eq(userId), any(LocalDateTime.class));
+    }
+
+    @Test
+    void getAllBookingsToUser_WithPastState_ShouldReturnPastBookings() {
+
+        Long userId = 1L;
+        String state = "PAST";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        User user = new User();
+        user.setId(userId);
+
+        Booking booking1 = new Booking();
+        booking1.setId(1L);
+
+        List<Booking> bookings = Arrays.asList(booking1);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(bookingRepository.findByBooker_IdAndEndBefore(eq(userId), any(LocalDateTime.class), eq(sort))).thenReturn(bookings);
+
+        List<BookingCreateDto> result = bookingService.getAllBookingsToUser(userId, state);
+
+        assertNotNull(result);
+        verify(userRepository, times(1)).findById(userId);
+        verify(bookingRepository, times(1)).findByBooker_IdAndEndBefore(eq(userId), any(LocalDateTime.class), eq(sort));
+    }
+
+    @Test
+    void getAllBookingsToUser_WithFutureState_ShouldReturnFutureBookings() {
+
+        Long userId = 1L;
+        String state = "FUTURE";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        User user = new User();
+        user.setId(userId);
+
+        Booking booking1 = new Booking();
+        booking1.setId(1L);
+
+        List<Booking> bookings = Arrays.asList(booking1);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(bookingRepository.findByBooker_IdAndStartAfter(eq(userId), any(LocalDateTime.class), eq(sort))).thenReturn(bookings);
+
+        List<BookingCreateDto> result = bookingService.getAllBookingsToUser(userId, state);
+
+        assertNotNull(result);
+        verify(userRepository, times(1)).findById(userId);
+        verify(bookingRepository, times(1)).findByBooker_IdAndStartAfter(eq(userId), any(LocalDateTime.class), eq(sort));
+    }
+
+    @Test
     void getAllBookingsToUser_WithInvalidState_ShouldThrowException() {
 
         Long userId = 1L;
@@ -511,5 +637,119 @@ class BookingServiceImplTest {
 
         assertThrows(ValidationException.class, () -> bookingService.getAllItemBookingToUser(userId, state));
         verify(itemRepository, times(1)).findAllByUser_Id(userId);
+    }
+
+    @Test
+    void getAllItemBookingToUser_WithWaitingState_ShouldReturnWaitingBookings() {
+
+        Long userId = 1L;
+        String state = "WAITING";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        Item item = new Item();
+        item.setId(1L);
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+
+        when(itemRepository.findAllByUser_Id(userId)).thenReturn(Arrays.asList(item));
+        when(bookingRepository.findByItem_User_IdAndStatus(userId, BookingStatus.WAITING, sort)).thenReturn(Arrays.asList(booking));
+
+        List<BookingCreateDto> result = bookingService.getAllItemBookingToUser(userId, state);
+
+        assertNotNull(result);
+        verify(itemRepository, times(1)).findAllByUser_Id(userId);
+        verify(bookingRepository, times(1)).findByItem_User_IdAndStatus(userId, BookingStatus.WAITING, sort);
+    }
+
+    @Test
+    void getAllItemBookingToUser_WithRejectedState_ShouldReturnRejectedBookings() {
+
+        Long userId = 1L;
+        String state = "REJECTED";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        Item item = new Item();
+        item.setId(1L);
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+
+        when(itemRepository.findAllByUser_Id(userId)).thenReturn(Arrays.asList(item));
+        when(bookingRepository.findByItem_User_IdAndStatus(userId, BookingStatus.REJECTED, sort)).thenReturn(Arrays.asList(booking));
+
+        List<BookingCreateDto> result = bookingService.getAllItemBookingToUser(userId, state);
+
+        assertNotNull(result);
+        verify(itemRepository, times(1)).findAllByUser_Id(userId);
+        verify(bookingRepository, times(1)).findByItem_User_IdAndStatus(userId, BookingStatus.REJECTED, sort);
+    }
+
+    @Test
+    void getAllItemBookingToUser_WithCurrentState_ShouldReturnCurrentBookings() {
+
+        Long userId = 1L;
+        String state = "CURRENT";
+
+        Item item = new Item();
+        item.setId(1L);
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+
+        when(itemRepository.findAllByUser_Id(userId)).thenReturn(Arrays.asList(item));
+        when(bookingRepository.findByItemUser(eq(userId), any(LocalDateTime.class))).thenReturn(Arrays.asList(booking));
+
+        List<BookingCreateDto> result = bookingService.getAllItemBookingToUser(userId, state);
+
+        assertNotNull(result);
+        verify(itemRepository, times(1)).findAllByUser_Id(userId);
+        verify(bookingRepository, times(1)).findByItemUser(eq(userId), any(LocalDateTime.class));
+    }
+
+    @Test
+    void getAllItemBookingToUser_WithPastState_ShouldReturnPastBookings() {
+
+        Long userId = 1L;
+        String state = "PAST";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        Item item = new Item();
+        item.setId(1L);
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+
+        when(itemRepository.findAllByUser_Id(userId)).thenReturn(Arrays.asList(item));
+        when(bookingRepository.findByItem_User_IdAndEndBefore(eq(userId), any(LocalDateTime.class), eq(sort))).thenReturn(Arrays.asList(booking));
+
+        List<BookingCreateDto> result = bookingService.getAllItemBookingToUser(userId, state);
+
+        assertNotNull(result);
+        verify(itemRepository, times(1)).findAllByUser_Id(userId);
+        verify(bookingRepository, times(1)).findByItem_User_IdAndEndBefore(eq(userId), any(LocalDateTime.class), eq(sort));
+    }
+
+    @Test
+    void getAllItemBookingToUser_WithFutureState_ShouldReturnFutureBookings() {
+
+        Long userId = 1L;
+        String state = "FUTURE";
+        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+
+        Item item = new Item();
+        item.setId(1L);
+
+        Booking booking = new Booking();
+        booking.setId(1L);
+
+        when(itemRepository.findAllByUser_Id(userId)).thenReturn(Arrays.asList(item));
+        when(bookingRepository.findByItem_User_IdAndStartAfter(eq(userId), any(LocalDateTime.class), eq(sort))).thenReturn(Arrays.asList(booking));
+
+        List<BookingCreateDto> result = bookingService.getAllItemBookingToUser(userId, state);
+
+        assertNotNull(result);
+        verify(itemRepository, times(1)).findAllByUser_Id(userId);
+        verify(bookingRepository, times(1)).findByItem_User_IdAndStartAfter(eq(userId), any(LocalDateTime.class), eq(sort));
     }
 }

@@ -10,7 +10,7 @@ import ru.practicum.shareit.user.model.User;
  */
 
 @Entity
-@Table(name = "item")
+@Table(name = "ITEMS")
 @Data
 public class Item {
 

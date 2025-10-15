@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 
 @Entity
-@Table(name = "request")
+@Table(name = "ITEM_REQUESTS")
 @Data
 public class ItemRequest {
 

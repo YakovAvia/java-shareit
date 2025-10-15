@@ -7,7 +7,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "COMMENTS")
 @Data
 public class Comment {
 
@@ -25,6 +25,6 @@ public class Comment {
     @JoinColumn(name = "author_id")
     private User author;
 
-    @Column(name = "create_at")
+    @Column(name = "created")
     private LocalDateTime created;
 }

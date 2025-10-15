@@ -74,12 +74,19 @@ class BookingServiceImplTest {
     @Test
     void createBooking_whenItemNotAvailable_thenThrowValidationException() {
         long userId = 1L;
+        long ownerId = 2L;
         long itemId = 1L;
+
         User booker = new User();
         booker.setId(userId);
+
+        User owner = new User();
+        owner.setId(ownerId);
+
         Item item = new Item();
         item.setId(itemId);
         item.setAvailable(false);
+        item.setUser(owner);
 
         RequestBookingCreateDto bookingDto = new RequestBookingCreateDto();
         bookingDto.setItemId(itemId);
@@ -127,6 +134,6 @@ class BookingServiceImplTest {
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        assertThrows(NotFoundException.class, () -> bookingService.updateBookingStatus(userId, bookingId, true));
+        assertThrows(ValidationException.class, () -> bookingService.updateBookingStatus(userId, bookingId, true));
     }
 }

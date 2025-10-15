@@ -13,7 +13,7 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.request.dto.CreateItemRequestDTO;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.request.service.impl.ItemRequestServiceImpl;
@@ -48,7 +48,7 @@ class ItemRequestServiceImplTest {
     void createItemRequest_WithValidData_ShouldCreateRequest() {
 
         Long userId = 1L;
-        CreateItemRequestDTO createDto = new CreateItemRequestDTO();
+        CreateItemRequestDto createDto = new CreateItemRequestDto();
         createDto.setDescription("Нужна дрель");
 
         User user = new User();
@@ -78,7 +78,7 @@ class ItemRequestServiceImplTest {
     void createItemRequest_WhenUserNotFound_ShouldThrowException() {
 
         Long userId = 999L;
-        CreateItemRequestDTO createDto = new CreateItemRequestDTO();
+        CreateItemRequestDto createDto = new CreateItemRequestDto();
         createDto.setDescription("Нужна дрель");
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());

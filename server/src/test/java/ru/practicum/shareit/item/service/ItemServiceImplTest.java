@@ -221,6 +221,42 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void getItem_WhenItemExistsAndUserIsOwner_ShouldReturnItemWithBookings() {
+
+        Long userId = 1L;
+        Long itemId = 1L;
+
+        User owner = new User();
+        owner.setId(userId);
+
+        Item item = new Item();
+        item.setId(itemId);
+        item.setName("Дрель");
+        item.setUser(owner);
+
+        Booking lastBooking = new Booking();
+        lastBooking.setId(1L);
+        Booking nextBooking = new Booking();
+        nextBooking.setId(2L);
+        List<Comment> comments = Arrays.asList();
+
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+        when(bookingRepository.findLastBooking(eq(itemId), any(LocalDateTime.class))).thenReturn(lastBooking);
+        when(bookingRepository.findNextBooking(eq(itemId), any(LocalDateTime.class))).thenReturn(nextBooking);
+        when(commentRepository.findByItemId(itemId)).thenReturn(comments);
+
+        GetItemDto result = itemService.getItem(itemId, userId);
+
+        assertNotNull(result);
+        assertNotNull(result.getLastBooking());
+        assertNotNull(result.getNextBooking());
+        verify(itemRepository, times(1)).findById(itemId);
+        verify(bookingRepository, times(1)).findLastBooking(eq(itemId), any(LocalDateTime.class));
+        verify(bookingRepository, times(1)).findNextBooking(eq(itemId), any(LocalDateTime.class));
+        verify(commentRepository, times(1)).findByItemId(itemId);
+    }
+
+    @Test
     void getItem_WhenItemNotFound_ShouldThrowException() {
 
         Long userId = 1L;

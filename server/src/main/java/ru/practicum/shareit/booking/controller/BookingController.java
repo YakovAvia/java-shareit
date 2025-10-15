@@ -27,7 +27,7 @@ public class BookingController {
     private static final String HEADER_REQUEST_ID = "X-Sharer-User-Id";
 
     @PostMapping()
-    public ResponseEntity<BookingCreateDto> createBooking(@RequestHeader(HEADER_REQUEST_ID) Long userId,@RequestBody RequestBookingCreateDto bookingDto) {
+    public ResponseEntity<BookingCreateDto> createBooking(@RequestHeader(HEADER_REQUEST_ID) Long userId, @RequestBody RequestBookingCreateDto bookingDto) {
         log.info("Создаем заявку для бронирования вещи: {}.", bookingDto);
         return ResponseEntity.ok(bookingService.createBooking(bookingDto, userId));
     }

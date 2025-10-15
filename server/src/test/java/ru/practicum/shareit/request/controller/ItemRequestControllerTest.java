@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.practicum.shareit.request.ItemRequestController;
-import ru.practicum.shareit.request.dto.CreateItemRequestDTO;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -31,14 +31,14 @@ class ItemRequestControllerTest {
     @Test
     void createItemRequest_WithValidData_ShouldReturnCreatedRequest() {
         Long userId = 1L;
-        CreateItemRequestDTO createDto = new CreateItemRequestDTO();
+        CreateItemRequestDto createDto = new CreateItemRequestDto();
         createDto.setDescription("Нужна дрель");
 
         ItemRequestDto expectedResponse = new ItemRequestDto();
         expectedResponse.setId(1L);
         expectedResponse.setDescription("Нужна дрель");
 
-        when(requestService.createItemRequest(eq(userId), any(CreateItemRequestDTO.class)))
+        when(requestService.createItemRequest(eq(userId), any(CreateItemRequestDto.class)))
                 .thenReturn(expectedResponse);
 
         ResponseEntity<ItemRequestDto> response = itemRequestController.createItemRequest(userId, createDto);

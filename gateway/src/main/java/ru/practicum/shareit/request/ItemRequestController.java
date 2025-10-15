@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.CreateItemRequestDTO;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 
 /**
  * TODO Sprint add-item-requests.
@@ -24,7 +24,7 @@ public class ItemRequestController {
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping()
-    public ResponseEntity<Object> createItemRequest(@RequestHeader(HEADER_REQUEST_ID) Long userId, @Valid @RequestBody CreateItemRequestDTO dto) {
+    public ResponseEntity<Object> createItemRequest(@RequestHeader(HEADER_REQUEST_ID) Long userId, @Valid @RequestBody CreateItemRequestDto dto) {
         log.info("Создаем запрос на поиск вещи");
         return itemRequestClient.createItemRequest(userId, dto);
     }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
+import ru.practicum.shareit.booking.dto.BookingDto;
 
 /**
  * TODO Sprint add-controllers.
@@ -20,5 +21,9 @@ public class ItemDto {
     private Long user;
 
     private Long requestId;
+
+    private BookingDto lastBooking;
+
+    private BookingDto nextBooking;
 
 }

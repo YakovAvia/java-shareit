@@ -10,7 +10,7 @@ import ru.practicum.shareit.item.dto.mappers.ItemMappers;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.request.dto.CreateItemRequestDTO;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -34,7 +34,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public ItemRequestDto createItemRequest(Long userId, CreateItemRequestDTO dto) {
+    public ItemRequestDto createItemRequest(Long userId, CreateItemRequestDto dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден!"));
 

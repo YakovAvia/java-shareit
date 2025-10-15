@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.request.dto.CreateItemRequestDTO;
+import ru.practicum.shareit.request.dto.CreateItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
@@ -24,7 +24,7 @@ public class ItemRequestController {
     private static final String HEADER_REQUEST_ID = "X-Sharer-User-Id";
 
     @PostMapping()
-    public ResponseEntity<ItemRequestDto> createItemRequest(@RequestHeader(HEADER_REQUEST_ID) Long userId, @RequestBody CreateItemRequestDTO dto) {
+    public ResponseEntity<ItemRequestDto> createItemRequest(@RequestHeader(HEADER_REQUEST_ID) Long userId, @RequestBody CreateItemRequestDto dto) {
         log.info("Создаем запрос на поиск вещи");
         return ResponseEntity.ok(requestService.createItemRequest(userId, dto));
     }

@@ -68,7 +68,17 @@ public class ItemServiceImpl implements ItemService {
             updateItem.setAvailable(itemDto.getAvailable());
         }
 
-        return ItemMappers.toItemDto(itemRepository.save(updateItem));
+        Booking bookingLast;
+        Booking bookingNext;
+        if (updateItem.getUser().getId().equals(userId)) {
+            bookingLast = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
+            bookingNext = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
+        } else {
+            bookingLast = null;
+            bookingNext = null;
+        }
+
+        return ItemMappers.toUpdateItemDto(itemRepository.save(updateItem), bookingLast, bookingNext);
     }
 
     @Override

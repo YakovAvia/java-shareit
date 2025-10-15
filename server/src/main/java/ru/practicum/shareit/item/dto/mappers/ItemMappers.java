@@ -21,6 +21,35 @@ public final class ItemMappers {
         itemDto.setDescription(item.getDescription());
         itemDto.setAvailable(item.getAvailable());
         itemDto.setRequestId(item.getRequest() != null ? item.getRequest().getId() : null);
+
+        return itemDto;
+    }
+
+    public static ItemDto toUpdateItemDto(Item item, Booking lastBooking, Booking nextBooking) {
+        ItemDto itemDto = new ItemDto();
+        itemDto.setId(item.getId());
+        itemDto.setName(item.getName());
+        itemDto.setDescription(item.getDescription());
+        itemDto.setAvailable(item.getAvailable());
+        itemDto.setRequestId(item.getRequest() != null ? item.getRequest().getId() : null);
+
+        if (lastBooking != null) {
+            BookingDto bookingDto = new BookingDto();
+            bookingDto.setId(lastBooking.getId());
+            bookingDto.setStart(lastBooking.getStart());
+            itemDto.setLastBooking(bookingDto);
+        } else {
+            itemDto.setLastBooking(null);
+        }
+        if (nextBooking != null) {
+            BookingDto bookingDto = new BookingDto();
+            bookingDto.setId(nextBooking.getId());
+            bookingDto.setStart(nextBooking.getStart());
+            itemDto.setNextBooking(bookingDto);
+        } else {
+            itemDto.setNextBooking(null);
+        }
+
         return itemDto;
     }
 

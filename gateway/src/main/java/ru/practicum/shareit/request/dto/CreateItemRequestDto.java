@@ -6,9 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class CreateItemRequestDTO {
-
-    private Long id;
+public class CreateItemRequestDto {
     @NotBlank
     private String description;
     private Long requestorId;

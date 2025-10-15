@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Data
 public class BookingCreateDto {
 
-    //как я понимаю для тестов надо
     private Long id;
 
     private LocalDateTime start;

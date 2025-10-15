@@ -75,7 +75,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return enrichRequestsWithItems(List.of(itemRequest)).get(0);
     }
 
-    private List<ItemRequestDto> enrichRequestsWithItems(List<ItemRequest> requests) {
+    public List<ItemRequestDto> enrichRequestsWithItems(List<ItemRequest> requests) {
         if (requests.isEmpty()) {
             return List.of();
         }

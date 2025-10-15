@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,9 +24,6 @@ class ItemControllerTest {
 
     @MockBean
     private ItemService itemService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private static final String HEADER_REQUEST_ID = "X-Sharer-User-Id";
 

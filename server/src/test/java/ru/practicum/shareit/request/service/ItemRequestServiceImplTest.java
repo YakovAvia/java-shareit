@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dto.CreateItemRequestDTO;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -29,9 +28,6 @@ class ItemRequestServiceImplTest {
 
     @Mock
     private ItemRequestRepository itemRequestRepository;
-
-    @Mock
-    private ItemRepository itemRepository;
 
     @InjectMocks
     private ItemRequestServiceImpl itemRequestService;

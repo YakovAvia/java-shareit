@@ -1,6 +1,5 @@
 package ru.practicum.shareit.user.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,9 +22,6 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     void getUser_whenUserExists_shouldReturnUser() throws Exception {

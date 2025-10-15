@@ -1,25 +1,25 @@
 package ru.practicum.shareit.booking.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
 
-/**
- * TODO Sprint add-bookings.
- */
-
 @Data
-public class BookingDto {
+public class BookingCreateDto {
 
+    //как я понимаю для тестов надо
     private Long id;
 
-    @NotNull
     private LocalDateTime start;
 
-    @NotNull
     private LocalDateTime end;
+
+    private ItemDto item;
+
+    private UserDto booker;
 
     private BookingStatus status;
 
